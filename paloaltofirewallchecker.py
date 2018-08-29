@@ -1,11 +1,12 @@
-from pandevice.objects import AddressObject, ServiceObject, ApplicationObject
-from pandevice.firewall import Firewall
-from pandevice.policies import SecurityRule, Rulebase
-import ipaddress
 import re
 import sys
-from socket import gethostbyname
+import ipaddress
 from functools import partial
+from socket import gethostbyname
+
+from pandevice.firewall import Firewall
+from pandevice.policies import SecurityRule, Rulebase
+from pandevice.objects import AddressObject, ServiceObject, ApplicationObject
 
 
 class IPv4Range(object):
@@ -16,9 +17,22 @@ class IPv4Range(object):
             raise ValueError("Invalid ip-range value, use format like 10.1.1.1-2")
         elif int(_ip_first) < 0 or int(_ip_first) > int(_ip_last) or int(_ip_last) > 255:
             raise ValueError("Invalid ip-range value, use format like 10.1.1.1-2")
-        self.first_ip = ipaddress.ip_address(unicode(ip_suffix+_ip_first))
-        self.last_ip = ipaddress.ip_address(unicode(ip_suffix+_ip_last))
-        self.num_addresses = int(_ip_last) - int(_ip_first)
+        
+        self._first_ip = ipaddress.ip_address(unicode(ip_suffix+_ip_first))
+        self._last_ip = ipaddress.ip_address(unicode(ip_suffix+_ip_last))
+        self._num_addresses = int(_ip_last) - int(_ip_first)
+        
+    @property
+    def first_ip(self):
+        return self._first_ip
+    
+    @property
+    def last_ip(self):
+        return self._last_ip
+
+    @property
+    def num_addresses(self):
+        return self._num_addresses
 
     def __contains__(self, item):
         if not isinstance(item, (IPv4Network, IPv4Address, IPv4Range)):
