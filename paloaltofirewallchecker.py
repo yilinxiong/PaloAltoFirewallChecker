@@ -158,10 +158,7 @@ def test_traffic(*args):
     if rule.action == "allow":
         is_allowed = True
 
-    if all([src_matched, dst_matched, app_matched, srv_matched, is_allowed]):
-        return True
-
-    return False
+    return all((src_matched, dst_matched, app_matched, srv_matched, is_allowed))
 
 
 if __name__ == "__main__":
